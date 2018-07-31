@@ -115,6 +115,19 @@ def main():
                 frm['address'] = config['email']['from']['address']
                 send_mail(to=recipients, subject='AutoChronoGG: Invalid cookie', message='An error occurred while fetching results: UNAUTHORIZED. Terminating...', frm=frm, host=config['email']['server'])
             return
+        result_json = json.loads(results.decode('utf-8'))
+        coins = result_json['quest']['value']
+        bonus = result_json['quest']['bonus']
+        total = coins + bonus
+        output = 'You recieved ' + str(total) + ' total coins.'
+        if ('base' in result_json['chest']):
+            chest = result_json['chest']['base']
+            chest_bonus = result_json['chest']['bonus']
+            streak = result_json['chest']['kind']
+            total_chest = chest + chest_bonus
+            grand_total = total + total_chest
+            output += ' You also recieved a bonus of ' + str(total_chest) + ' coins for a ' + str(streak) + ' day streak! Bringing the total to ' + str(grand_total) + '.'
+        print(output)
         print ('Done.')
         saveCookie(ggCookie)
     except KeyboardInterrupt:
